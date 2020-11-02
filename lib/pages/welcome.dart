@@ -1,6 +1,8 @@
 import 'package:blogapp/pages/SIgnUpPage.dart';
 import 'package:flutter/material.dart';
 
+import 'SignInPage.dart';
+
 class WelcomePage extends StatefulWidget {
   @override
   _WelcomePageState createState() => _WelcomePageState();
@@ -116,8 +118,7 @@ class _WelcomePageState extends State<WelcomePage>
                 "Sign up with Email",
                 onEmailClick,
               ),
-              boxContainer(
-                  "assets/facebooklogo.jpg", "Sign up with Google", Null),
+              boxContainer("assets/facebooklogo.jpg", "Sign up Facebook", Null),
               SizedBox(
                 height: 20,
               ),
@@ -133,12 +134,19 @@ class _WelcomePageState extends State<WelcomePage>
                     SizedBox(
                       width: 10,
                     ),
-                    Text(
-                      "SignIn",
-                      style: TextStyle(
-                          color: Colors.green,
-                          fontSize: 17,
-                          fontWeight: FontWeight.bold),
+                    InkWell(
+                      onTap: () {
+                        Navigator.of(context).push(MaterialPageRoute(
+                          builder: (context) => SignInPage(),
+                        ));
+                      },
+                      child: Text(
+                        "SignIn",
+                        style: TextStyle(
+                            color: Colors.green,
+                            fontSize: 17,
+                            fontWeight: FontWeight.bold),
+                      ),
                     ),
                   ],
                 ),

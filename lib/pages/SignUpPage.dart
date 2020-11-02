@@ -1,4 +1,8 @@
+import 'package:blogapp/NetworkHandler.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'dart:convert';
+import 'HomePage.dart';
 
 class SignUpPage extends StatefulWidget {
   @override
@@ -8,6 +12,39 @@ class SignUpPage extends StatefulWidget {
 class _SignUpPageState extends State<SignUpPage> {
   bool vis = true;
   final _globalkey = GlobalKey<FormState>();
+  NetworkHandler networkHandler = NetworkHandler();
+  TextEditingController _usernameController = TextEditingController();
+  TextEditingController _emailController = TextEditingController();
+  TextEditingController _passwordController = TextEditingController();
+  String errorText;
+  bool validate = false;
+  bool circular = false;
+  final storage = new FlutterSecureStorage();
+
+  checkUser() async {
+    if (_usernameController.text.length == 0) {
+      setState(() {
+        circular = false;
+        validate = false;
+        errorText = "Username cant be empty";
+      });
+    } else {
+      var response = await networkHandler
+          .get("/user/checkUsername/${_usernameController.text}");
+      if (response['Status']) {
+        setState(() {
+          circular = false;
+          validate = false;
+          errorText = "Username already registered";
+        });
+      } else {
+        setState(() {
+          validate = true;
+        });
+      }
+    }
+  }
+
   Widget usernameTextField() {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 10.0),
@@ -15,15 +52,17 @@ class _SignUpPageState extends State<SignUpPage> {
         children: [
           Text("Username"),
           TextFormField(
-            validator: (value) {
-              if (value.isEmpty) {
-                return "UserName cant be empty";
-                //todo unique or not
-              }
-              return null;
-            },
+            controller: _usernameController,
+            // validator: (value) {
+            //   if (value.isEmpty) {
+            //     return "UserName cant be empty";
+            //     //todo unique or not
+            //   }
+            //   return null;
+            // },
             // controller: _usernameController,
             decoration: InputDecoration(
+              errorText: validate ? null : errorText,
               // errorText: validate ? null : errorText,
               focusedBorder: UnderlineInputBorder(
                 borderSide: BorderSide(
@@ -45,7 +84,7 @@ class _SignUpPageState extends State<SignUpPage> {
         children: [
           Text("Email"),
           TextFormField(
-            // controller: _emailController,
+            controller: _emailController,
             validator: (value) {
               if (value.isEmpty) return "Email can't be empty";
               if (!value.contains("@")) return "Email is Invalid";
@@ -72,7 +111,7 @@ class _SignUpPageState extends State<SignUpPage> {
         children: [
           Text("Password"),
           TextFormField(
-            // controller: _passwordController,
+            controller: _passwordController,
             validator: (value) {
               if (value.isEmpty) return "Password can't be empty";
               if (value.length < 8) return "Password lenght must have >=8";
@@ -142,30 +181,86 @@ class _SignUpPageState extends State<SignUpPage> {
 
               //for kaam chalau signup button
               InkWell(
-                onTap: () {
-                  if (_globalkey.currentState.validate()) {
-                    //if success we will send data to rest server
-                    print("Validated!");
+                onTap: () async {
+                  setState(() {
+                    circular = true;
+                  });
+                  await checkUser();
+                  if (_globalkey.currentState.validate() && validate) {
+                    // we will send the data to rest server
+                    Map<String, String> data = {
+                      "username": _usernameController.text,
+                      "email": _emailController.text,
+                      "password": _passwordController.text,
+                    };
+                    print(data);
+                    var responseRegister =
+                        await networkHandler.post("/user/register", data);
+
+                    //Login Logic added here
+                    if (responseRegister.statusCode == 200 ||
+                        responseRegister.statusCode == 201) {
+                      Map<String, String> data = {
+                        "username": _usernameController.text,
+                        "password": _passwordController.text,
+                      };
+                      var response =
+                          await networkHandler.post("/user/login", data);
+
+                      if (response.statusCode == 200 ||
+                          response.statusCode == 201) {
+                        Map<String, dynamic> output =
+                            json.decode(response.body);
+                        print(output["token"]);
+                        await storage.write(
+                            key: "token", value: output["token"]);
+                        setState(() {
+                          validate = true;
+                          circular = false;
+                        });
+                        Navigator.pushAndRemoveUntil(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => HomePage(),
+                            ),
+                            (route) => false);
+                      } else {
+                        Scaffold.of(context).showSnackBar(
+                            SnackBar(content: Text("Netwok Error")));
+                      }
+                    }
+
+                    //Login Logic end here
+
+                    setState(() {
+                      circular = false;
+                    });
+                  } else {
+                    setState(() {
+                      circular = false;
+                    });
                   }
                 },
-                child: Container(
-                  width: 150,
-                  height: 50,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(10),
-                    color: Color(0xff00A86B),
-                  ),
-                  child: Center(
-                    child: Text(
-                      "Sign Up",
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
+                child: circular
+                    ? CircularProgressIndicator()
+                    : Container(
+                        width: 150,
+                        height: 50,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10),
+                          color: Color(0xff00A86B),
+                        ),
+                        child: Center(
+                          child: Text(
+                            "Sign Up",
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
                       ),
-                    ),
-                  ),
-                ),
               )
               // emailTextField(),
             ],
