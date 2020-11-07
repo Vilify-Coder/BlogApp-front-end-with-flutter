@@ -1,3 +1,4 @@
+import 'package:blogapp/NetworkHandler.dart';
 import 'package:blogapp/profile/CreateProfile.dart';
 import 'package:flutter/material.dart';
 
@@ -7,8 +8,41 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
+  NetworkHandler networkHandler = NetworkHandler();
+  Widget page = CircularProgressIndicator();
+  @override
+  void initState() {
+    checkProfile();
+    super.initState();
+  }
+
+  void checkProfile() async {
+    var response = await networkHandler.get("/profile/checkProfile");
+    if (response['status'] == true) {
+      setState(() {
+        page = showProfile();
+      });
+    } else {
+      setState(() {
+        page = button();
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    return Scaffold(
+      body: page,
+    );
+  }
+
+  Widget showProfile() {
+    return Center(
+      child: Text("Profile data is availiable!"),
+    );
+  }
+
+  Widget button() {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 70),
       child: Column(

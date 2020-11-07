@@ -3,8 +3,11 @@ import 'dart:io';
 // import 'package:blogapp/NetworkHandler.dart';
 // import 'package:blogapp/Pages/HomePage.dart';
 // import 'package:blogapp/Screen/HomeScreen.dart';
+import 'package:blogapp/pages/HomePage.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+
+import '../NetworkHandler.dart';
 
 class CreatProfile extends StatefulWidget {
   // CreatProfile({Key key}) : super(key: key);
@@ -14,21 +17,21 @@ class CreatProfile extends StatefulWidget {
 }
 
 class _CreatProfileState extends State<CreatProfile> {
-  // final networkHandler = NetworkHandler();
-  // bool circular = false;
+  final networkHandler = NetworkHandler();
+  bool circular = false;
   PickedFile _imageFile;
-  // final _globalkey = GlobalKey<FormState>();
-  // TextEditingController _name = TextEditingController();
-  // TextEditingController _profession = TextEditingController();
-  // TextEditingController _dob = TextEditingController();
-  // TextEditingController _title = TextEditingController();
-  // TextEditingController _about = TextEditingController();
+  final _globalkey = GlobalKey<FormState>();
+  TextEditingController _name = TextEditingController();
+  TextEditingController _profession = TextEditingController();
+  TextEditingController _dob = TextEditingController();
+  TextEditingController _title = TextEditingController();
+  TextEditingController _about = TextEditingController();
   final ImagePicker _picker = ImagePicker();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Form(
-        // key: _globalkey,
+        key: _globalkey,
         child: ListView(
           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 30),
           children: <Widget>[
@@ -57,44 +60,49 @@ class _CreatProfileState extends State<CreatProfile> {
               height: 20,
             ),
             InkWell(
-              // onTap: () async {
-              //   setState(() {
-              //     circular = true;
-              //   });
-              // if (_globalkey.currentState.validate()) {
-              //   Map<String, String> data = {
-              //     "name": _name.text,
-              //     "profession": _profession.text,
-              //     "dob": _dob.text,
-              //     "title": _title.text,
-              //     "about": _about.text,
-              //   };
-              //   var response =
-              //       await networkHandler.post("/profile/add", data);
-              //   if (response.statusCode == 200 ||
-              //       response.statusCode == 201) {
-              //     if (_imageFile.path != null) {
-              //       var imageResponse = await networkHandler.patchImage(
-              //           "/profile/add/image", _imageFile.path);
-              //       if (imageResponse.statusCode == 200) {
-              //         setState(() {
-              //           circular = false;
-              //         });
-              //         Navigator.of(context).pushAndRemoveUntil(
-              //             MaterialPageRoute(builder: (context) => HomePage()),
-              //             (route) => false);
-              //       }
-              //     } else {
-              //       setState(() {
-              //         circular = false;
-              //       });
-              //       Navigator.of(context).pushAndRemoveUntil(
-              //           MaterialPageRoute(builder: (context) => HomePage()),
-              //           (route) => false);
-              //     }
-              //   }
-              // }
-              // },
+              onTap: () async {
+                setState(() {
+                  circular = true;
+                  print(File(_imageFile.path));
+                  print("printed");
+                  circular = false;
+                });
+                // if (_globalkey.currentState.validate()) {
+                //   Map<String, String> data = {
+                //     "name": _name.text,
+                //     "profession": _profession.text,
+                //     "DOB": _dob.text,
+                //     "titleline": _title.text,
+                //     "about": _about.text,
+                //   };
+                //   var response =
+                //       await networkHandler.post("/profile/add", data);
+                //   if (response.statusCode == 200 ||
+                //       response.statusCode == 201) {
+                //     print("send");
+
+                //     if (_imageFile.path != null) {
+                //       var imageResponse = await networkHandler.patchImage(
+                //           "/profile/add/image", _imageFile.path);
+                //       if (imageResponse.statusCode == 200) {
+                //         setState(() {
+                //           circular = false;
+                //         });
+                //         Navigator.of(context).pushAndRemoveUntil(
+                //             MaterialPageRoute(builder: (context) => HomePage()),
+                //             (route) => false);
+                //       }
+                //     } else {
+                //       setState(() {
+                //         circular = false;
+                //       });
+                //       Navigator.of(context).pushAndRemoveUntil(
+                //           MaterialPageRoute(builder: (context) => HomePage()),
+                //           (route) => false);
+                //     }
+                //   }
+                // }
+              },
               child: Center(
                 child: Container(
                   width: 200,
@@ -103,18 +111,18 @@ class _CreatProfileState extends State<CreatProfile> {
                     color: Colors.teal,
                     borderRadius: BorderRadius.circular(10),
                   ),
-                  // child: Center(
-                  //   child: circular
-                  //       ? CircularProgressIndicator()
-                  //       : Text(
-                  //           "Submit",
-                  //           style: TextStyle(
-                  //             color: Colors.white,
-                  //             fontSize: 18,
-                  //             fontWeight: FontWeight.bold,
-                  //           ),
-                  //         ),
-                  // ),
+                  child: Center(
+                    child: circular
+                        ? CircularProgressIndicator()
+                        : Text(
+                            "Submit",
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                  ),
                 ),
               ),
             ),
@@ -206,12 +214,12 @@ class _CreatProfileState extends State<CreatProfile> {
 
   Widget nameTextField() {
     return TextFormField(
-      // controller: _name,
-      // validator: (value) {
-      //   if (value.isEmpty) return "Name can't be empty";
+      controller: _name,
+      validator: (value) {
+        if (value.isEmpty) return "Name can't be empty";
 
-      //   return null;
-      // },
+        return null;
+      },
       decoration: InputDecoration(
         border: OutlineInputBorder(
             borderSide: BorderSide(
@@ -235,12 +243,12 @@ class _CreatProfileState extends State<CreatProfile> {
 
   Widget professionTextField() {
     return TextFormField(
-      // controller: _profession,
-      // validator: (value) {
-      //   if (value.isEmpty) return "Profession can't be empty";
+      controller: _profession,
+      validator: (value) {
+        if (value.isEmpty) return "Profession can't be empty";
 
-      //   return null;
-      // },
+        return null;
+      },
       decoration: InputDecoration(
         border: OutlineInputBorder(
             borderSide: BorderSide(
@@ -264,12 +272,12 @@ class _CreatProfileState extends State<CreatProfile> {
 
   Widget dobField() {
     return TextFormField(
-      // controller: _dob,
-      // validator: (value) {
-      //   if (value.isEmpty) return "DOB can't be empty";
+      controller: _dob,
+      validator: (value) {
+        if (value.isEmpty) return "DOB can't be empty";
 
-      //   return null;
-      // },
+        return null;
+      },
       decoration: InputDecoration(
         border: OutlineInputBorder(
             borderSide: BorderSide(
@@ -293,12 +301,12 @@ class _CreatProfileState extends State<CreatProfile> {
 
   Widget titleTextField() {
     return TextFormField(
-      // controller: _title,
-      // validator: (value) {
-      //   if (value.isEmpty) return "Title can't be empty";
+      controller: _title,
+      validator: (value) {
+        if (value.isEmpty) return "Title can't be empty";
 
-      //   return null;
-      // },
+        return null;
+      },
       decoration: InputDecoration(
         border: OutlineInputBorder(
             borderSide: BorderSide(
@@ -322,12 +330,12 @@ class _CreatProfileState extends State<CreatProfile> {
 
   Widget aboutTextField() {
     return TextFormField(
-      // controller: _about,
-      // validator: (value) {
-      //   if (value.isEmpty) return "About can't be empty";
+      controller: _about,
+      validator: (value) {
+        if (value.isEmpty) return "About can't be empty";
 
-      //   return null;
-      // },
+        return null;
+      },
       maxLines: 4,
       decoration: InputDecoration(
         border: OutlineInputBorder(
