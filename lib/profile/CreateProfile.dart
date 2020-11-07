@@ -63,45 +63,40 @@ class _CreatProfileState extends State<CreatProfile> {
               onTap: () async {
                 setState(() {
                   circular = true;
-                  print(File(_imageFile.path));
-                  print("printed");
-                  circular = false;
                 });
-                // if (_globalkey.currentState.validate()) {
-                //   Map<String, String> data = {
-                //     "name": _name.text,
-                //     "profession": _profession.text,
-                //     "DOB": _dob.text,
-                //     "titleline": _title.text,
-                //     "about": _about.text,
-                //   };
-                //   var response =
-                //       await networkHandler.post("/profile/add", data);
-                //   if (response.statusCode == 200 ||
-                //       response.statusCode == 201) {
-                //     print("send");
-
-                //     if (_imageFile.path != null) {
-                //       var imageResponse = await networkHandler.patchImage(
-                //           "/profile/add/image", _imageFile.path);
-                //       if (imageResponse.statusCode == 200) {
-                //         setState(() {
-                //           circular = false;
-                //         });
-                //         Navigator.of(context).pushAndRemoveUntil(
-                //             MaterialPageRoute(builder: (context) => HomePage()),
-                //             (route) => false);
-                //       }
-                //     } else {
-                //       setState(() {
-                //         circular = false;
-                //       });
-                //       Navigator.of(context).pushAndRemoveUntil(
-                //           MaterialPageRoute(builder: (context) => HomePage()),
-                //           (route) => false);
-                //     }
-                //   }
-                // }
+                if (_globalkey.currentState.validate()) {
+                  Map<String, String> data = {
+                    "name": _name.text,
+                    "profession": _profession.text,
+                    "DOB": _dob.text,
+                    "titleline": _title.text,
+                    "about": _about.text,
+                  };
+                  var response =
+                      await networkHandler.post("/profile/add", data);
+                  if (response.statusCode == 200 ||
+                      response.statusCode == 201) {
+                    if (_imageFile.path != null) {
+                      var imageResponse = await networkHandler.patchImage(
+                          "/profile/add/image", _imageFile.path);
+                      if (imageResponse.statusCode == 200) {
+                        setState(() {
+                          circular = false;
+                        });
+                        Navigator.of(context).pushAndRemoveUntil(
+                            MaterialPageRoute(builder: (context) => HomePage()),
+                            (route) => false);
+                      }
+                    } else {
+                      setState(() {
+                        circular = false;
+                      });
+                      Navigator.of(context).pushAndRemoveUntil(
+                          MaterialPageRoute(builder: (context) => HomePage()),
+                          (route) => false);
+                    }
+                  }
+                }
               },
               child: Center(
                 child: Container(
@@ -132,14 +127,13 @@ class _CreatProfileState extends State<CreatProfile> {
     );
   }
 
-  // var _imageFile = null;
   Widget imageProfile() {
     return Center(
       child: Stack(children: <Widget>[
         CircleAvatar(
           radius: 80.0,
           backgroundImage: _imageFile == null
-              ? AssetImage("assets/facebooklogo.jpg")
+              ? AssetImage("assets/profile.jpg")
               : FileImage(File(_imageFile.path)),
         ),
         Positioned(

@@ -1,5 +1,6 @@
 import 'package:blogapp/NetworkHandler.dart';
 import 'package:blogapp/profile/CreateProfile.dart';
+import 'package:blogapp/profile/MainProfile.dart';
 import 'package:flutter/material.dart';
 
 class ProfileScreen extends StatefulWidget {
@@ -37,9 +38,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   Widget showProfile() {
-    return Center(
-      child: Text("Profile data is availiable!"),
-    );
+    return MainProfile();
   }
 
   Widget button() {
