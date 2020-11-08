@@ -1,3 +1,4 @@
+import 'package:blogapp/blog/addblog.dart';
 import 'package:blogapp/screens/HomeScreen.dart';
 import 'package:blogapp/screens/ProfileScreen.dart';
 import 'package:flutter/material.dart';
@@ -77,8 +78,8 @@ class _HomePageState extends State<HomePage> {
       floatingActionButton: FloatingActionButton(
         backgroundColor: Colors.teal,
         onPressed: () {
-          // Navigator.of(context)
-          //     .push(MaterialPageRoute(builder: (context) => AddBlog()));
+          Navigator.of(context)
+              .push(MaterialPageRoute(builder: (context) => AddBlog()));
         },
         child: Text(
           "+",

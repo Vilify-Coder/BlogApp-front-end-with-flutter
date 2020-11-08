@@ -56,10 +56,10 @@ class _MainProfileState extends State<MainProfile> {
                 Divider(
                   thickness: 0.8,
                 ),
-                otherDetails("About", "I am a programmer"),
-                otherDetails("Name", "Nirmal Rathaur"),
-                otherDetails("Profession", "Student"),
-                otherDetails("DOB", "26/08/1998"),
+                otherDetails("About", profileModel.about),
+                otherDetails("Name", profileModel.name),
+                otherDetails("Profession", profileModel.profession),
+                otherDetails("DOB", profileModel.DOB),
                 Divider(
                   thickness: 0.8,
                 ),
@@ -77,7 +77,7 @@ class _MainProfileState extends State<MainProfile> {
           Center(
             child: CircleAvatar(
               radius: 50,
-              backgroundImage: NetworkHandler().getImage(profileModel.username),
+              // backgroundImage: NetworkHandler().getImage(profileModel.username),
             ),
           ),
           Text(

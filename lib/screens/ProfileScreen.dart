@@ -21,7 +21,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     var response = await networkHandler.get("/profile/checkProfile");
     if (response['status'] == true) {
       setState(() {
-        page = showProfile();
+        page = MainProfile();
       });
     } else {
       setState(() {
@@ -37,9 +37,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
-  Widget showProfile() {
-    return MainProfile();
-  }
+  // Widget showProfile() {
+  //   return MainProfile();
+  // }
 
   Widget button() {
     return Padding(

@@ -230,7 +230,7 @@ class _CreatProfileState extends State<CreatProfile> {
         ),
         labelText: "Name",
         helperText: "Name can't be empty",
-        hintText: "Dev Stack",
+        hintText: "Nirmal Rathaur",
       ),
     );
   }
@@ -343,7 +343,7 @@ class _CreatProfileState extends State<CreatProfile> {
         )),
         labelText: "About",
         helperText: "Write about yourself",
-        hintText: "I am Dev Stack",
+        hintText: "I am a programmer",
       ),
     );
   }
