@@ -77,7 +77,7 @@ class _MainProfileState extends State<MainProfile> {
           Center(
             child: CircleAvatar(
               radius: 50,
-              // backgroundImage: NetworkHandler().getImage(profileModel.username),
+              backgroundImage: NetworkHandler().getImage(profileModel.username),
             ),
           ),
           Text(
@@ -112,7 +112,7 @@ class _MainProfileState extends State<MainProfile> {
             height: 5,
           ),
           Text(
-            value,
+            value ?? "sample data",
             style: TextStyle(fontSize: 15),
           )
         ],

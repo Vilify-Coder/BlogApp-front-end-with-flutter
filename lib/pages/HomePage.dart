@@ -1,7 +1,12 @@
+// import 'dart:html';
+
+import 'package:blogapp/NetworkHandler.dart';
 import 'package:blogapp/blog/addblog.dart';
+import 'package:blogapp/pages/welcome.dart';
 import 'package:blogapp/screens/HomeScreen.dart';
 import 'package:blogapp/screens/ProfileScreen.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -12,6 +17,50 @@ class _HomePageState extends State<HomePage> {
   int currentState = 0;
   List<Widget> widgets = [HomeScreen(), ProfileScreen()];
   List<String> titleString = ["Home Page", "Profile Page"];
+  final storage = FlutterSecureStorage();
+  String username;
+  NetworkHandler networkHandler = NetworkHandler();
+  Widget profilePhoto = IconButton(
+    icon: Icon(Icons.account_circle),
+    onPressed: () {},
+    iconSize: 90.0,
+  );
+  void checkProfile() async {
+    var response = await networkHandler.get("/profile/checkProfile");
+    if (response["status"] == true) {
+      setState(() {
+        username = response['username'];
+        profilePhoto = CircleAvatar(
+          radius: 50,
+          backgroundImage: NetworkHandler().getImage(response['username']),
+        );
+      });
+    } else {
+      setState(() {
+        username = "username";
+        profilePhoto = IconButton(
+          icon: Icon(Icons.account_circle),
+          onPressed: () {},
+          iconSize: 90.0,
+        );
+      });
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    checkProfile();
+  }
+
+  void logout() async {
+    await storage.delete(key: "token");
+    Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(builder: (context) => WelcomePage()),
+        (route) => false);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -23,16 +72,12 @@ class _HomePageState extends State<HomePage> {
               child: Column(
                 children: <Widget>[
                   // profilePhoto,
-                  IconButton(
-                    icon: Icon(Icons.account_circle),
-                    onPressed: () {},
-                    iconSize: 90.0,
-                  ),
+                  profilePhoto,
                   SizedBox(
                     height: 10,
                   ),
-                  // Text("@$username"),
-                  Text("Username Sample"),
+                  Text("@$username"),
+                  // Text("Username Sample"),
                 ],
               ),
             ),
@@ -60,7 +105,7 @@ class _HomePageState extends State<HomePage> {
               title: Text("Logout"),
               trailing: Icon(Icons.power_settings_new),
               // onTap: logout,
-              onTap: () {},
+              onTap: logout,
             ),
           ],
         ),
